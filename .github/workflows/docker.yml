@@ -2,8 +2,8 @@ name: Build and push image
 
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
 
 env:
   AWS_ECR_PUBLIC_REGISTRY_ALIAS: "vlaaaaaaad"
@@ -21,22 +21,14 @@ jobs:
       - name: Prepare for container image build
         id: prepare
         run: |
-          echo "::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          echo "::set-output name=version::$(date '+%Y-%m-%d')"
+          VERSION_TAG=$(head -n 1 Dockerfile | sed -e 's/.*refinery:\(.*\)@sha256.*/\1/')
           
-          ECR_PUBLIC_SHA_TAG="public.ecr.aws/${{ env.AWS_ECR_PUBLIC_REGISTRY_ALIAS }}/${{ env.AWS_ECR_PUBLIC_REPO_NAME }}:${{ github.sha }}"
-          TAGS=$ECR_PUBLIC_SHA_TAG
-          echo "🏷️ Added container tag: ${ECR_PUBLIC_SHA_TAG}"
-          
-          if [[ "${{ github.ref }}" == 'refs/heads/main' ]]; then
-            ECR_PUBLIC_DATE_TAG="public.ecr.aws/${{ env.AWS_ECR_PUBLIC_REGISTRY_ALIAS }}/${{ env.AWS_ECR_PUBLIC_REPO_NAME }}:$(date '+%Y-%m-%d')"
-            ECR_PUBLIC_LATEST_TAG="public.ecr.aws/${{ env.AWS_ECR_PUBLIC_REGISTRY_ALIAS }}/${{ env.AWS_ECR_PUBLIC_REPO_NAME }}:latest"
+          ECR_PUBLIC_VERSION_TAG="public.ecr.aws/${{ env.AWS_ECR_PUBLIC_REGISTRY_ALIAS }}/${{ env.AWS_ECR_PUBLIC_REPO_NAME }}:$VERSION_TAG"
             
-            TAGS+=", ${ECR_PUBLIC_DATE_TAG}, ${ECR_PUBLIC_LATEST_TAG}"
-            echo "🏷️ Added container tag: ${ECR_PUBLIC_DATE_TAG}"
-            echo "🏷️ Added container tag: ${ECR_PUBLIC_LATEST_TAG}"
-          fi
+          TAGS+="${ECR_PUBLIC_VERSION_TAG}"
+          echo "🏷️ Added container tag: ${ECR_PUBLIC_VERSION_TAG}"
           
+          echo "::set-output name=version::${VERSION_TAG}"
           echo "::set-output name=tags::${TAGS}"
           echo "🏷️ Final list of container image tags: ${TAGS}"
 
