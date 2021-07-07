@@ -1,0 +1,14 @@
+version: 2
+
+updates:
+  # Auto-upgrade Github Actions versions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Auto-upgrade Docker image tags
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
