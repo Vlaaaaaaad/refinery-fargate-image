@@ -1,4 +1,4 @@
-FROM honeycombio/refinery:1.2.1@sha256:4f1305ccf88d5313312f47c903c449ef917983b32031e99df8948d1841a1f944 AS refinery
+FROM honeycombio/refinery:1.3.0@sha256:edb2e461d92e4ab600d8801fe8673aea6d24efcccabaee147595d3d37c409d2a AS refinery
 
 FROM ubuntu:focal@sha256:376209074d481dca0a9cf4282710cd30a9e7ff402dea8261acdaaf57a18971dd
 COPY --from=refinery /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
