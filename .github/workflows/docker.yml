@@ -21,13 +21,13 @@ jobs:
       - name: Prepare for container image build
         id: prepare
         run: |
-          VERSION_TAG=$(head -n 1 Dockerfile | sed -e 's/.*refinery:\(.*\)@sha256.*/\1/')
-          
+          VERSION_TAG=$(head -n 1 Dockerfile | sed -e 's/.*refinery:\(.*\) AS.*/\1/')
+
           ECR_PUBLIC_VERSION_TAG="public.ecr.aws/${{ env.AWS_ECR_PUBLIC_REGISTRY_ALIAS }}/${{ env.AWS_ECR_PUBLIC_REPO_NAME }}:$VERSION_TAG"
-            
+
           TAGS+="${ECR_PUBLIC_VERSION_TAG}"
           echo "🏷️ Added container tag: ${ECR_PUBLIC_VERSION_TAG}"
-          
+
           echo "::set-output name=version::${VERSION_TAG}"
           echo "::set-output name=tags::${TAGS}"
           echo "🏷️ Final list of container image tags: ${TAGS}"
@@ -46,9 +46,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          no-cache: true # Waiting for https://github.com/docker/buildx/pull/535
+          no-cache: true # Rare builds, no rush
           file: ./Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64, linux/arm64
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.vendor=${{ github.event.repository.owner.login }}
