@@ -1,4 +1,4 @@
-FROM honeycombio/refinery:1.12.0 AS refinery
+FROM honeycombio/refinery:1.12.1 AS refinery
 
 FROM ubuntu:focal-20220316
 COPY --from=refinery /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
